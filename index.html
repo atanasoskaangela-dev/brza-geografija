@@ -128,6 +128,7 @@ table.rev tfoot td{font-weight:700;border-bottom:none}
 </div>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="words.js"></script>
+<script src="names.js"></script>
 <script>
 (function(){
 const TIMES=[[60,"1 мин"],[90,"1:30"],[120,"2 мин"],[180,"3 мин"],[0,"до СТОП"]];
@@ -138,7 +139,8 @@ const norm=s=>String(s||"").trim().toLocaleUpperCase("mk").replace(/\s+/g," ");
 const OFFICIAL=new Set(OFFICIAL_RAW.map(norm));
 const CAT_KEY={"ДРЖАВА":"country","ЗЕМЈА":"country","ГРАД":"city","РЕКА":"river","ПЛАНИНА":"mountain","ЖИВОТНО":"animal","РАСТЕНИЕ":"plant","ИМЕ":"name"};
 const WORDS={}; try{for(const [k,v] of Object.entries(window.BG_WORDS||{})) WORDS[k]=new Set(v.split("|").map(norm))}catch(e){}
-function listFor(cat){const k=CAT_KEY[norm(cat)]; return k&&WORDS[k]?{set:WORDS[k],geo:["country","city","river","mountain"].includes(k)}:null}
+try{ if(WORDS.name&&window.BG_NAMES_EXTRA) window.BG_NAMES_EXTRA.split("|").forEach(x=>WORDS.name.add(norm(x))) }catch(e){}
+function listFor(cat){const k=CAT_KEY[norm(cat)]; return k&&WORDS[k]?{set:WORDS[k],geo:["country","city","river","mountain"].includes(k),soft:k==="name"}:null}
 const letters=s=>(String(s).match(/\p{L}/gu)||[]).length;
 
 const app=document.getElementById("app");
@@ -469,8 +471,8 @@ function computeRound(){
     ids.forEach(id=>{
       const a=g.answers["r"+g.round+"|"+id]; const raw=((a&&a.values&&a.values[ci])||"").trim(); const n=norm(raw);
       const dict=!!n&&OFFICIAL.has(n), list=listFor(c), inList=!!list&&list.set.has(n);
-      const why=!n?"":(!n.startsWith(L)?"letter":(letters(n)<2?"short":(list&&!inList&&!(dict&&list.geo)?"notfound":"")));
-      const auto=!!n&&!why;
+      const why=!n?"":(!n.startsWith(L)?"letter":(letters(n)<2?"short":(list&&!inList&&!(dict&&list.geo)?(list.soft?"unsure":"notfound"):"")));
+      const auto=!!n&&(!why||why==="unsure");
       const k=id+"|"+ci, hostSet=k in ov, ok=hostSet?(!!ov[k]&&!!n):auto;
       cells[k]={raw,n,ok,auto,dict,inList,why,hostSet,p:0}; if(ok)valid.push(id);
     });
@@ -484,6 +486,7 @@ function note(x){
   if(x.why==="letter"){t="Не почнува на „"+S.game.letter+"“";cls="no"}
   else if(x.why==="short"){t="Само една буква не се признава";cls="no"}
   else if(x.why==="notfound"){t="Не е пронајдено во листата";cls="no"}
+  else if(x.why==="unsure"){t="Непотврдено (го нема во листата)";cls="maybe"}
   else if(x.dict){t="✓ Официјален речник";cls="yes"}
   else if(x.inList){t="✓ Во листата";cls="yes"}
   if(x.hostSet)t=(x.ok?"Признаено":"Поништено")+" од домаќинот"+(t?" · "+t:"");
