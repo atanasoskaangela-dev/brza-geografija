@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="mk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Брза географија</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Golos+Text:wght@400;500;600&family=Caveat:wght@500;700&display=swap">
+<style>
+*{box-sizing:border-box}body{margin:0}img{max-width:100%}
+/* Layout: school graph-paper sheet; one narrow column, the letter is the hero of each round */
+:root{
+  --paper:#f4f7fb; --grid:#dbe5f0; --ink:#1d2b4a; --muted:#5d6b86; --line:#c9d6e6;
+  --sheet:#ffffff; --margin:#e0474c; --accent:#2457d6; --accent-ink:#ffffff;
+  --good:#1f8a4c; --bad:#c23b3f; --warn:#b7791f; --chip:#eaf0fa;
+  --f-display:"Unbounded",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111827; --grid:#1c2638; --ink:#e7edf8; --muted:#9aa8c2; --line:#2c3a52;
+  --sheet:#172033; --margin:#ff6b6f; --accent:#7ea2ff; --accent-ink:#0d1526;
+  --good:#4fd08a; --bad:#ff7a7e; --warn:#f0b454; --chip:#22304a; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#111827; --grid:#1c2638; --ink:#e7edf8; --muted:#9aa8c2; --line:#2c3a52;
+  --sheet:#172033; --margin:#ff6b6f; --accent:#7ea2ff; --accent-ink:#0d1526;
+  --good:#4fd08a; --bad:#ff7a7e; --warn:#f0b454; --chip:#22304a; color-scheme:dark }
+html,body{min-height:100%}
+body{background-color:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:900;font-size:clamp(20px,5vw,28px);letter-spacing:-.01em;line-height:1.05;margin:0}
+.brand span{color:var(--margin)}
+.who{font-size:13px;color:var(--muted)}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:20px 20px 22px 34px;position:relative;box-shadow:0 1px 0 var(--line),0 8px 24px -18px rgba(20,40,80,.35)}
+.sheet::before{content:"";position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.75}
+h2{font-family:var(--f-display);font-weight:700;font-size:18px;margin:0 0 12px;text-wrap:balance}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 180px;min-width:0}
+label.lbl{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+input[type=text]{width:100%;box-sizing:border-box;font:inherit;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:10px 12px}
+input[type=text]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+button{font:inherit;font-weight:600;border-radius:6px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:9px 16px;cursor:pointer}
+button:hover{background:var(--chip)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.primary:hover{filter:brightness(1.08);background:var(--accent)}
+button.stop{background:var(--margin);border-color:var(--margin);color:#fff;font-family:var(--f-display);font-weight:900;letter-spacing:.06em;padding:12px 26px;font-size:17px}
+button.stop:hover{background:var(--margin);filter:brightness(1.08)}
+button:disabled{opacity:.4;cursor:not-allowed;filter:none}
+button.link{border:none;padding:4px 6px;color:var(--muted);font-weight:500;text-decoration:underline}
+.code{font-family:var(--f-display);font-weight:900;font-size:34px;letter-spacing:.14em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:999px;padding:5px 12px;font-size:14px}
+.chip button{border:none;padding:0 2px;line-height:1;font-size:16px;color:var(--muted)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:none;border-radius:0;padding:7px 12px;font-weight:500}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--sheet)}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.list li:last-child{border-bottom:none}
+.pts{font-family:var(--f-display);font-weight:700;font-variant-numeric:tabular-nums}
+.tag{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.notice{border-left:3px solid var(--warn);padding:8px 12px;background:var(--chip);border-radius:4px;font-size:14px}
+.err{color:var(--bad);font-size:14px}
+
+/* Round header */
+.roundbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.stamp{width:96px;height:96px;flex:none;border-radius:50%;border:4px solid var(--margin);color:var(--margin);display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:900;font-size:52px;line-height:1;transform:rotate(-6deg);background:var(--sheet)}
+.stamp.spin{animation:wob .12s linear infinite}
+@keyframes wob{0%{transform:rotate(-8deg) scale(.96)}50%{transform:rotate(4deg) scale(1.03)}100%{transform:rotate(-8deg) scale(.96)}}
+.stamp.land{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes land{0%{transform:rotate(-30deg) scale(1.5);opacity:.3}100%{transform:rotate(-6deg) scale(1);opacity:1}}
+.timer{font-family:var(--f-display);font-weight:700;font-size:30px;font-variant-numeric:tabular-nums}
+.timer.low{color:var(--margin)}
+.bar{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin-top:6px;width:160px;max-width:100%}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s linear}
+
+/* Answer sheet */
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 22px}
+.field{display:flex;flex-direction:column;border-bottom:1.5px solid var(--line);padding-top:6px}
+.field label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.field input{border:none;background:transparent;font-family:var(--f-hand);font-size:28px;color:var(--accent);padding:0 0 2px;line-height:1.2;width:100%;min-width:0}
+.field input:focus{outline:none}
+.field:focus-within{border-color:var(--accent)}
+.field input:disabled{color:var(--muted)}
+
+/* Review table */
+.tablewrap{overflow-x:auto;margin-inline:-4px}
+table.rev{border-collapse:collapse;width:100%;min-width:480px}
+table.rev th,table.rev td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.rev th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+table.rev td.cat{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.ans{display:flex;align-items:baseline;justify-content:space-between;gap:6px;font-family:var(--f-hand);font-size:23px;line-height:1.1;background:none;border:none;padding:2px 4px;width:100%;text-align:left;color:var(--ink);border-radius:4px;font-weight:500}
+button.ans:hover{background:var(--chip)}
+
+.ans .t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.chk{font-family:var(--f-body);font-size:11px;line-height:1.3;color:var(--muted);text-decoration:none}
+.chk.yes{color:var(--good)}.chk.no{color:var(--bad)}.chk.maybe{color:var(--warn)}
+.ans.bad .w{text-decoration:line-through;text-decoration-color:var(--bad);color:var(--muted)}
+.src{font-size:12px;color:var(--muted);max-width:70ch}
+.src a{color:var(--accent)}
+.ans .p{font-family:var(--f-display);font-size:12px;font-weight:700;color:var(--good);white-space:nowrap}
+.ans.bad .p{color:var(--bad)}
+.ans.empty .w{color:var(--line)}
+table.rev tfoot td{font-weight:700;border-bottom:none}
+.podium{display:flex;align-items:flex-end;gap:10px;justify-content:center;flex-wrap:wrap;padding-top:8px}
+.pod{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:90px}
+.pod .blk{width:90px;background:var(--chip);border:1.5px solid var(--line);border-bottom:none;border-radius:6px 6px 0 0;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:22px}
+.pod .nm{font-weight:600;text-align:center;max-width:110px;overflow-wrap:anywhere}
+@media (prefers-reduced-motion: reduce){.stamp.spin,.stamp.land{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 class="brand">Брза <span>географија</span></h1>
+    <div class="who" id="who"></div>
+  </header>
+  <main id="app" class="stack"><section class="sheet"><p class="muted">Се вчитува…</p></section></main>
+</div>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+(function(){
+const TIMES=[[60,"1 мин"],[90,"1:30"],[120,"2 мин"],[180,"3 мин"],[0,"до СТОП"]];
+const POOL="АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШ".split("");
+const SPIN_MS=2600;
+const OFFICIAL_RAW=["Ѓавато", "Јабланица", "Јава", "Јадран", "Јадранско Море", "Јакупица", "Јамајка", "Јамусукро", "Јангцекјанг", "Јапонија", "Јапонско Море", "Јарен", "Јемен", "Јиланд", "Јокохама", "Јонец", "Јонско Море", "Јордан", "Јоханесбург", "Јуанде", "Југославија", "Јудеја", "Јужен Повратник", "Јужен Поларен Круг", "Јужен Судан", "Јужна Америка", "Јужна Кореја", "Јужно Кинеско Море", "Јужноафриканска Република", "Јукатан", "Јукон", "Јурук", "Јуруклак", "Јуруклуци", "Јута", "Љуботен", "Љубљана", "Њаса", "Њемен", "Њу Џерси", "Њу Делхи", "Њу Орлеанс", "Њукасл", "Њуфаундленд", "Њујорк", "Ќустендил", "Џакарта", "Џенова", "Џибути", "Џорџ Таун", "Џорџија", "Џуба", "Абисинија", "Абиџа", "Абориџин", "Абу Даби", "Абхазија", "Авар", "Авганистан", "Авињон", "Австралија", "Австрија", "Австроунгарија", "Агра", "Ад-дар ал-Бајда", "Аденски Залив", "Адис Абеба", "Азербејџан", "Азија", "Азијат", "Азовско Море", "Азорски Острови", "Азот", "Азотија", "Акад", "Аконкагва", "Акра", "Ал Манама", "Ал Фашир", "Аландски Острови", "Албанија", "Александрија", "Алеутски Острови", "Алжир", "Алма Ата", "Алпи", "Алјаска", "Амазон", "Амазонија", "Аман", "Америка", "Амстердам", "Амур", "Анадолија", "Ангкор", "Англија", "Англосаксонец", "Ангола", "Андалузија", "Анди", "Андора", "Андора ла Вела", "Анкара", "Анкона", "Ант", "Анталија", "Антананариве", "Антарктик", "Антверпен", "Антига и Барбуда", "Антили", "Антилски Острови", "Апалачки Планини", "Апенини", "Апенински Планини", "Апенински Полуостров", "Апија", "Арабиска Пустина", "Арабиски Полуостров", "Арабиско Море", "Арабија", "Арабјанец", "Аралско Езеро", "Аралско Море", "Арап", "Аргентина", "Ардени", "Ариец", "Арктик", "Арктички Океан", "Аруба", "Асирија", "Асмара", "Астрахан", "Асуан", "Асунсион", "Атакама", "Атена", "Атика", "Атина", "Атички Полуостров", "Атлантски Океан", "Атлас", "Атос", "Африка", "Африканер", "Ахаец", "Ацтек", "Ашхабад", "Ајндховен", "Баб ел Мандеб", "Баба", "Бабелмандепски Проток", "Бабуна", "Баварија", "Багдад", "Баирики", "Баку", "Балатон", "Балеарски Острови", "Бали", "Балкан", "Балкански Полуостров", "Балтик", "Балтичко Море", "Бамако", "Банат", "Бангкок", "Бангладеш", "Бангуи", "Бандар Сери Бегаван", "Банско", "Банџул", "Барбадос", "Баргала", "Баренцово Море", "Барселона", "Басетер", "Баскија", "Басра", "Бафинов Остров", "Бафинова Земја", "Бахама", "Бахами", "Бахреин", "Бачка", "Бајкал", "Бајкалско Езеро", "Беласица", "Белгија", "Белград", "Белиз", "Белмопан", "Бело Море", "Белорусија", "Белфаст", "Бенгази", "Бенгал", "Бенгалски Залив", "Бенин", "Берингов Проток", "Берлин", "Бермуди", "Бермудски Острови", "Берн", "Берово", "Бесарабија", "Бејрут", "Бизерта", "Бисао", "Бискајски Залив", "Бистра", "Битола", "Бишкек", "Благоевград", "Блиски Исток", "Богданци", "Богота", "Бодрум", "Бока Которска", "Боливија", "Болоња", "Бомбај", "Бон", "Борнео", "Босна и Херцеговина", "Бостон", "Босфор", "Боцвана", "Бошавица", "Бошавија", "Бошњак", "Бразавил", "Бразил", "Бразилија", "Братислава", "Брегалница", "Брегот на Слоновата Коска", "Бретања", "Бриг", "Бриж", "Брисел", "Британија", "Бриџтаун", "Брно", "Брод", "Брсјак", "Брунеј", "Бугарија", "Будва", "Будимпешта", "Буенос Аирес", "Букурешт", "Бур", "Бургас", "Буркина Фасо", "Бурма", "Бурса", "Бурунди", "Бутан", "Бушман", "Буџумбура", "Вавилон", "Вавилонија", "Вадуц", "Валандово", "Валенсија", "Валета", "Валонија", "Вандал", "Вануату", "Вардар", "Вардарија", "Варна", "Варшава", "Ватикан", "Вашингтон", "Велегезит", "Велес", "Велигденски Остров", "Велика Британија", "Велингтон", "Велс", "Венеција", "Венецуела", "Виена", "Виентијан", "Виетнам", "Византија", "Визигот", "Викинг", "Викторија", "Вила Зора", "Вилнус", "Виндхук", "Виница", "Вирџинија", "Висла", "Витачево", "Витлеем", "Влав", "Влтава", "Воден", "Водно", "Волга", "Волгоград", "Воронеж", "Војводина", "Врање", "Вроцлав", "Габон", "Габороне", "Газа", "Гал", "Галапагос", "Галиполе", "Галиполски Полуостров", "Галичица", "Галичник", "Галија", "Гамбија", "Гана", "Ганг", "Гвадалупе", "Гватемала", "Гвајана", "Гвинеја", "Гвинеја-Бисао", "Гдањск", "Гевгелија", "Гега", "Герман", "Германија", "Гетеборг", "Гетинген", "Гибралтар", "Гибралтарски Проток", "Гиза", "Гијана", "Глазгов", "Глобочица", "Гоби", "Голак", "Голан", "Голанска Висорамнина", "Голем Град", "Голем Кораб", "Големи Езера", "Голешница", "Горно Езеро", "Гостивар", "Гот", "Градско", "Гранада", "Грац", "Гренада", "Гренланд", "Гренобл", "Гринич", "Гринички меридијан", "Грузија", "Грција", "Гуангџу", "Даблин", "Дака", "Дакар", "Даутица", "Дебар", "Дебарско Езеро", "Дебарца", "Дебрецин", "Делхи", "Делчево", "Делчевска Котлина", "Демир Капија", "Демир Хисар", "Детроит", "Дешат", "Дижон", "Дили", "Динариди", "Дијарбекир", "Днепар", "Днестар", "Додома", "Доминика", "Доминикана", "Доминиканска Република", "Дон", "Дорец", "Дојран", "Дојранско Езеро", "Драговит", "Драч", "Дрезден", "Дрен", "Дримкол", "Дубаи", "Дубровник", "Дунав", "Дурбан", "Душанбе", "Евреин", "Евроазија", "Европа", "Егеј", "Егејска Македонија", "Егејско Море", "Египет", "Единбург", "Еквадор", "Екватор", "Екваторијална Гвинеја", "Ел Ајун", "Ел Салвадор", "Елада", "Елба", "Елбасан", "Елдорадо", "Елин", "Енисеј", "Еолец", "Епир", "Ердељ", "Ереван", "Шварцвалд", "Швајцарија", "Шведска", "Шибеник", "Шкотска", "Шкотско Море", "Шоп", "Шопка", "Шоплак", "Шпанија", "Шпицбершки Острови", "Шри Ланка", "Штип", "Штутгарт", "белец"];
+const norm=s=>String(s||"").trim().toLocaleUpperCase("mk").replace(/\s+/g," ");
+const OFFICIAL=new Set(OFFICIAL_RAW.map(norm));
+
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+
+let pid=ls.get("bg_pid"); if(!pid){pid="p"+Math.random().toString(36).slice(2)+Date.now().toString(36);ls.set("bg_pid",pid)}
+const S={name:ls.get("bg_name")||"",code:null,game:null,offset:0,screenKey:"",my:{},myRound:0,saveT:null,landed:false,busy:false};
+
+const isHost=()=>S.game&&S.game.host===pid;
+/* ---------- P2P ENGINE: домаќинот ја води играта во својот прелистувач ---------- */
+const PREFIX="brzageo-mk-v1-";
+const ANSWER_GRACE_MS=4000, DURATIONS=[0,60,90,120,180];
+const DEFAULT_CATS=["Држава","Град","Река","Планина","Растение","Животно","Предмет","Име"];
+const PEER_OPTS={debug:0,config:{iceServers:[{urls:"stun:stun.l.google.com:19302"},{urls:"stun:stun1.l.google.com:19302"}]}};
+let peer=null, G=null, hostConn=null, rid=0; const pending={}; const conns=new Set();
+const clean=(s,n)=>String(s==null?"":s).replace(/[\u0000-\u001f]/g,"").trim().slice(0,n);
+
+function publicState(g){
+  const answers={};
+  if(g.status!=="playing") for(const [k,v] of Object.entries(g.answers)) if(v.round===g.round) answers[k]=v;
+  return {code:g.code,host:g.host,status:g.status,categories:g.categories,duration:g.duration,round:g.round,letter:g.letter,
+    startedAt:g.startedAt,stoppedBy:g.stoppedBy,history:g.history,ov:g.ov,players:g.players,answers,serverTime:Date.now(),
+    submitted:g.status==="playing"?Object.keys(g.answers).filter(k=>g.answers[k].round===g.round&&Object.values(g.answers[k].values).filter(Boolean).length===g.categories.length).map(k=>k.split("|")[1]):[]};
+}
+function broadcast(g){
+  const st=publicState(g);
+  for(const c of conns){ try{ if(c.open) c.send({type:"state",state:st}) }catch(e){} }
+  onState(JSON.parse(JSON.stringify(st)));
+}
+function toReview(g,by){ if(g.status!=="playing")return; clearTimeout(g.timer); g.status="review"; g.stoppedBy=by||null; g.reviewAt=Date.now(); broadcast(g) }
+function hostOnly(b,g){ if(g.host!==b.pid) throw "Само домаќинот може да го направи ова." }
+const actions={
+  join(b,g){const name=clean(b.name,20); if(!name)throw "Внеси име."; const prev=g.players[b.pid]; g.players[b.pid]={name,joinedAt:prev?prev.joinedAt:Date.now()}; broadcast(g); return {code:g.code}},
+  leave(b,g){ if(b.pid!==g.host){delete g.players[b.pid]; broadcast(g)} return {} },
+  settings(b,g){hostOnly(b,g);
+    if(Array.isArray(b.categories)){const cats=[];for(const c of b.categories){const v=clean(c,24);if(v&&!cats.some(x=>norm(x)===norm(v)))cats.push(v)} if(cats.length>=2&&cats.length<=14)g.categories=cats}
+    if(DURATIONS.includes(b.duration))g.duration=b.duration; broadcast(g); return {}},
+  start(b,g){hostOnly(b,g); if(g.status==="playing")return {};
+    let used=g.used.slice(), avail=POOL.filter(l=>!used.includes(l)); if(!avail.length){used=[];avail=POOL.slice()}
+    const letter=avail[Math.floor(Math.random()*avail.length)];
+    Object.assign(g,{status:"playing",round:g.round+1,letter,used:[...used,letter],startedAt:Date.now(),stoppedBy:null,ov:{}});
+    clearTimeout(g.timer); if(g.duration) g.timer=setTimeout(()=>toReview(g,null),SPIN_MS+g.duration*1000+500);
+    broadcast(g); return {}},
+  answer(b,g){ if(!g.players[b.pid]||b.round!==g.round)return {};
+    if(g.status!=="playing"&&!(g.status==="review"&&Date.now()-g.reviewAt<ANSWER_GRACE_MS))return {};
+    const values={}; g.categories.forEach((c,i)=>{const v=clean(b.values&&b.values[i],40); if(v)values[i]=v});
+    const k="r"+g.round+"|"+b.pid, before=g.answers[k], wasFull=before&&Object.keys(before.values).length===g.categories.length;
+    g.answers[k]={round:g.round,values}; const full=Object.keys(values).length===g.categories.length;
+    if(g.status==="review"||full!==!!wasFull) broadcast(g); return {}},
+  stop(b,g){ if(g.status!=="playing"||!g.players[b.pid]||Date.now()-g.startedAt<SPIN_MS)return {}; toReview(g,b.pid); return {}},
+  toggle(b,g){hostOnly(b,g); const k=clean(b.key,80); if(b.value===null)delete g.ov[k]; else g.ov[k]=!!b.value; broadcast(g); return {}},
+  commit(b,g){hostOnly(b,g); if(g.status!=="review")return {};
+    const pts={}; for(const [id,p] of Object.entries(b.pts||{})) if(g.players[id]) pts[id]=Math.max(0,Math.min(1000,Number(p)||0));
+    g.history=g.history.filter(h=>h.round!==g.round).concat([{round:g.round,letter:g.letter,pts}]); g.status="lobby"; broadcast(g); return {}},
+  end(b,g){hostOnly(b,g); clearTimeout(g.timer); g.status="done"; broadcast(g); return {}}
+};
+function handle(b){ const fn=actions[b.action]; if(!fn)throw "Неважечко барање."; return fn(b,G) }
+
+function openPeer(id){
+  return new Promise((res,rej)=>{
+    if(typeof Peer==="undefined"){rej("Не може да се вчита модулот за поврзување. Проверете ја интернет врската.");return}
+    const p=id?new Peer(id,PEER_OPTS):new Peer(PEER_OPTS);
+    const t=setTimeout(()=>{rej("Серверот за поврзување не одговара. Обидете се повторно.");try{p.destroy()}catch(e){}},12000);
+    p.on("open",()=>{clearTimeout(t);res(p)});
+    p.on("error",e=>{clearTimeout(t);rej(e&&e.type==="unavailable-id"?"taken":"Грешка во поврзувањето ("+(e&&e.type||"?")+").")});
+  });
+}
+async function hostCreate(b){
+  const name=clean(b.name,20); if(!name) throw new Error("Внеси име.");
+  let code, p=null;
+  for(let i=0;i<6&&!p;i++){ code=String(1000+Math.floor(Math.random()*9000)); try{p=await openPeer(PREFIX+code)}catch(e){ if(e!=="taken") throw new Error(e) } }
+  if(!p) throw new Error("Не успеав да создадам игра. Обидете се повторно.");
+  if(peer) try{peer.destroy()}catch(e){}
+  peer=p;
+  G={code,host:pid,status:"lobby",categories:DEFAULT_CATS.slice(),duration:120,round:0,letter:"",used:[],history:[],ov:{},players:{[pid]:{name,joinedAt:Date.now()}},answers:{},stoppedBy:null,startedAt:0};
+  peer.on("connection",c=>{
+    conns.add(c);
+    c.on("open",()=>{ try{c.send({type:"state",state:publicState(G)})}catch(e){} });
+    c.on("data",m=>{
+      if(!m||m.type!=="rpc"||!m.b)return;
+      const req=Object.assign({},m.b,{code:G.code});
+      try{ const r=handle(req); c.send({type:"res",rid:m.rid,res:r}) }
+      catch(e){ c.send({type:"res",rid:m.rid,error:typeof e==="string"?e:"Грешка."}) }
+    });
+    c.on("close",()=>conns.delete(c)); c.on("error",()=>conns.delete(c));
+  });
+  peer.on("disconnected",()=>{ try{peer.reconnect()}catch(e){} });
+  return {code};
+}
+async function clientJoin(b){
+  if(peer) try{peer.destroy()}catch(e){}
+  peer=await openPeer(null).catch(e=>{throw new Error(e)});
+  await new Promise((res,rej)=>{
+    const c=peer.connect(PREFIX+b.code,{reliable:true}); hostConn=c;
+    const t=setTimeout(()=>rej(new Error("Нема активна игра со тој код, или домаќинот ја затворил страницата.")),10000);
+    c.on("open",()=>{clearTimeout(t);res()});
+    c.on("data",m=>{
+      if(m&&m.type==="state") onState(m.state);
+      else if(m&&m.type==="res"&&pending[m.rid]){ const p=pending[m.rid]; delete pending[m.rid]; m.error?p.rej(new Error(m.error)):p.res(m.res) }
+    });
+    c.on("close",()=>{ if(hostConn===c) hostLost() });
+    peer.on("error",e=>{ if(e&&e.type==="peer-unavailable"){clearTimeout(t);rej(new Error("Нема активна игра со тој код, или домаќинот ја затворил страницата."))} });
+  });
+  return rpc(b);
+}
+function rpc(b){
+  return new Promise((res,rej)=>{
+    if(!hostConn||!hostConn.open){rej(new Error("Нема врска со домаќинот."));return}
+    const id=++rid; pending[id]={res,rej}; hostConn.send({type:"rpc",rid:id,b});
+    setTimeout(()=>{ if(pending[id]){delete pending[id];rej(new Error("Домаќинот не одговара."))} },10000);
+  });
+}
+async function api(action,data={}){
+  const b={action,pid,code:S.code,...data};
+  if(action==="create") return hostCreate(b);
+  if(G){ try{return handle(b)}catch(e){throw new Error(typeof e==="string"?e:"Грешка.")} }
+  if(action==="join") return clientJoin(b);
+  return rpc(b);
+}
+function shutdown(){ if(G){clearTimeout(G.timer);G=null} conns.clear(); hostConn=null; if(peer){try{peer.destroy()}catch(e){} peer=null} }
+function hostLost(){
+  if(!S.code)return;
+  const code=S.code;
+  app.innerHTML=`<section class="sheet stack"><h2>Врската со домаќинот се прекина</h2><p class="muted">Домаќинот можеби ја затворил или освежил страницата.</p><div class="row"><button class="primary" id="rj">Поврзи се повторно</button><button id="bk">Назад</button></div><p class="err" id="rjerr"></p></section>`;
+  document.getElementById("bk").onclick=showHome;
+  document.getElementById("rj").onclick=async()=>{ try{ S.code=code; await api("join",{code,name:S.name}); S.screenKey=""; }catch(e){ document.getElementById("rjerr").textContent=e.message } };
+}
+window.addEventListener("beforeunload",e=>{ if(G&&Object.keys(G.players).length>1&&G.status!=="done"){e.preventDefault();e.returnValue=""} });
+
+
+/* ---------- HOME ---------- */
+function showHome(){
+  shutdown();
+  S.code=null;S.game=null;ls.set("bg_code",null);S.screenKey="home";whoLine();
+  app.innerHTML=`
+  <section class="sheet stack">
+    <h2>Играј со друштво</h2>
+    <p class="muted">Се извлекува буква, сите пишуваат по еден збор за секоја категорија. Прв што ќе ги пополни сите полиња вика СТОП. Уникатен одговор 10, ист како друг 5, единствен во категоријата 20 поени.</p>
+    <div><label class="lbl" for="nm">Твое име во играта</label><input type="text" id="nm" maxlength="20" placeholder="на пр. Ана" value="${esc(S.name)}"></div>
+    <div class="row">
+      <button class="primary" id="create">Нова игра</button>
+      <span class="muted">или</span>
+      <div class="row grow" style="flex-wrap:nowrap">
+        <input type="text" id="jc" inputmode="numeric" maxlength="4" placeholder="Код (4 бројки)" aria-label="Код на игра" style="max-width:170px">
+        <button id="join">Влези</button>
+      </div>
+    </div>
+    <p class="err" id="herr" role="alert"></p>
+  </section>
+  <section class="sheet stack">
+    <h3>Како се влегува</h3>
+    <p class="muted">Еден колега кликнува „Нова игра“ и ја држи страницата отворена до крајот, бидејќи играта работи преку неговиот прелистувач. Другите го внесуваат кодот од 4 бројки што ќе му се појави.</p>
+  </section>`;
+  const nm=document.getElementById("nm");
+  nm.addEventListener("input",()=>{S.name=nm.value.trim();ls.set("bg_name",S.name)});
+  document.getElementById("create").onclick=createGame;
+  document.getElementById("join").onclick=()=>joinGame(document.getElementById("jc").value.trim());
+  document.getElementById("jc").addEventListener("keydown",e=>{if(e.key==="Enter")joinGame(e.target.value.trim())});
+}
+function herr(t){const e=document.getElementById("herr");if(e)e.textContent=t}
+async function createGame(){
+  if(!S.name){herr("Прво внеси име.");document.getElementById("nm").focus();return}
+  if(S.busy)return;S.busy=true;
+  try{const r=await api("create",{name:S.name});enterGame(r.code);broadcast(G)}catch(e){herr(e.message)}
+  S.busy=false;
+}
+async function joinGame(code){
+  if(!S.name){herr("Прво внеси име.");document.getElementById("nm")?.focus();return}
+  if(!/^\d{4,6}$/.test(code)){herr("Кодот има 4 бројки.");return}
+  if(S.busy)return;S.busy=true;
+  try{S.code=code;enterGame(code);await api("join",{code,name:S.name})}catch(e){S.code=null;showHome();herr(e.message)}
+  S.busy=false;
+}
+
+/* ---------- GAME ---------- */
+function enterGame(code){
+  S.code=code;ls.set("bg_code",code);S.screenKey="";
+  app.innerHTML=`<section class="sheet"><p class="muted">Влегуваме во игра ${esc(code)}…</p></section>`;
+}
+function onState(g){
+  if(!S.code)return;
+  S.offset=g.serverTime-Date.now();
+  const prev=S.game; S.game=g;
+  if(prev&&prev.status==="playing"&&g.status!=="playing") flushSave(true);
+  render();
+}
+const now=()=>Date.now()+S.offset;
+function playerIds(){const P=S.game.players;return Object.keys(P).sort((a,b)=>P[a].joinedAt-P[b].joinedAt)}
+function pname(id){return (S.game.players[id]&&S.game.players[id].name)||"Играч"}
+function totals(){const t={};playerIds().forEach(id=>t[id]=0);(S.game.history||[]).forEach(h=>Object.entries(h.pts||{}).forEach(([id,p])=>t[id]=(t[id]||0)+p));return t}
+function whoLine(){
+  const w=document.getElementById("who");
+  w.innerHTML=S.code?`Игра <b>${esc(S.code)}</b> · ${esc(S.name)} <button class="link" id="leave">Излези</button>`:"";
+  const l=document.getElementById("leave"); if(l)l.onclick=async()=>{if(!G)await api("leave").catch(()=>{});showHome()};
+}
+function render(){
+  const g=S.game; if(!g)return; whoLine();
+  const key=g.status+":"+g.round;
+  if(g.status==="playing"){ if(S.screenKey!==key){S.screenKey=key;renderPlay()} else updatePlayers(); return }
+  S.screenKey=key;
+  if(g.status==="review") return renderReview();
+  if(g.status==="done") return renderDone();
+  renderLobby();
+}
+
+/* ---------- LOBBY ---------- */
+function renderLobby(){
+  const g=S.game, host=isHost(), ids=playerIds(), t=totals();
+  const ranked=ids.slice().sort((a,b)=>t[b]-t[a]);
+  const ae=document.activeElement, editing=ae&&ae.id==="newcat", nv=editing?ae.value:"";
+  const link=location.origin+location.pathname;
+  app.innerHTML=`
+  <section class="sheet stack">
+    <div class="row" style="justify-content:space-between">
+      <div><h3>Код за влез</h3><div class="code">${esc(S.code)}</div></div>
+      <p class="muted grow" style="max-width:340px">Колегите ја отвораат <b>${esc(link.replace(/^https?:\/\//,""))}</b> и го внесуваат кодот.${host?" Не ја затворај и не ја освежувај оваа страница додека трае играта.":""}</p>
+    </div>
+  </section>
+  <section class="sheet stack">
+    <h2>${g.round?`По рунда ${g.round}`:"Играчи"} <span class="muted" style="font-size:14px;font-family:var(--f-body);font-weight:500">(${ids.length})</span></h2>
+    <ul class="list">${ranked.map((id,i)=>`<li><span>${g.round?`<span class="muted">${i+1}.</span> `:""}${esc(pname(id))} ${id===g.host?'<span class="tag">домаќин</span>':""} ${id===pid?'<span class="tag">ти</span>':""}</span>${g.round?`<span class="pts">${t[id]}</span>`:""}</li>`).join("")}</ul>
+  </section>
+  <section class="sheet stack">
+    <h3>Категории</h3>
+    <div class="chips">${g.categories.map((c,i)=>`<span class="chip">${esc(c)}${host&&g.categories.length>2?`<button data-rm="${i}" aria-label="Отстрани ${esc(c)}">×</button>`:""}</span>`).join("")}</div>
+    ${host?`<div class="row"><input type="text" id="newcat" maxlength="24" placeholder="Додај категорија (на пр. Село)" class="grow" value="${esc(nv)}"><button id="addcat">Додај</button></div>`:""}
+    <h3 style="margin-top:6px">Време за рунда</h3>
+    ${host?`<div class="seg" role="group" aria-label="Време">${TIMES.map(([v,l])=>`<button data-t="${v}" aria-pressed="${g.duration===v}">${l}</button>`).join("")}</div>`
+      :`<p>${esc((TIMES.find(x=>x[0]===g.duration)||[0,"—"])[1])}</p>`}
+  </section>
+  <section class="row">
+    ${host?`<button class="primary" id="start">${g.round?"Следна рунда":"Започни игра"}</button>${g.round?`<button id="end">Крај на играта</button>`:""}`
+      :`<p class="muted">Чекаме домаќинот ${esc(pname(g.host))} да ја започне рундата.</p>`}
+  </section>`;
+  if(editing){const n=document.getElementById("newcat");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}}
+  if(host){
+    app.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const c=g.categories.slice();c.splice(+b.dataset.rm,1);api("settings",{categories:c})});
+    const add=()=>{const n=document.getElementById("newcat");const v=n.value.trim();n.value="";if(v)api("settings",{categories:[...g.categories,v]})};
+    document.getElementById("addcat").onclick=add;
+    document.getElementById("newcat").addEventListener("keydown",e=>{if(e.key==="Enter")add()});
+    app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>api("settings",{duration:+b.dataset.t}));
+    document.getElementById("start").onclick=e=>{e.target.disabled=true;api("start").catch(()=>{e.target.disabled=false})};
+    const end=document.getElementById("end"); if(end)end.onclick=()=>api("end");
+  }
+}
+
+/* ---------- PLAY ---------- */
+function renderPlay(){
+  const g=S.game;
+  if(S.myRound!==g.round){S.my={};S.myRound=g.round;lastSaved=""}
+  app.innerHTML=`
+  <section class="sheet stack">
+    <div class="roundbar">
+      <div class="stamp spin" id="stamp" aria-hidden="true">?</div>
+      <div class="grow">
+        <h3>Рунда ${g.round}</h3>
+        <div class="timer" id="timer">…</div>
+        ${g.duration?`<div class="bar"><i id="barfill" style="width:100%"></i></div>`:`<p class="muted">Без лимит, игра до СТОП</p>`}
+      </div>
+      <button class="stop" id="stopb" disabled>СТОП</button>
+    </div>
+    <p class="muted" id="ready" style="font-size:13px"></p>
+  </section>
+  <section class="sheet">
+    <div class="fields">${g.categories.map((c,i)=>`<div class="field"><label for="f${i}">${esc(c)}</label><input type="text" id="f${i}" data-c="${i}" autocomplete="off" autocapitalize="words" spellcheck="false" disabled value="${esc(S.my[i]||"")}"></div>`).join("")}</div>
+  </section>
+  <p class="muted" style="font-size:13px">Одговорите се зачувуваат додека пишуваш. СТОП се вклучува кога ќе ги пополниш сите полиња.</p>`;
+  const inputs=[...app.querySelectorAll("[data-c]")];
+  inputs.forEach((inp,i)=>{
+    inp.addEventListener("input",()=>{S.my[inp.dataset.c]=inp.value;scheduleSave();updateStop()});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();(inputs[i+1]||inp).focus()}});
+  });
+  document.getElementById("stopb").onclick=pressStop;
+  S.landed=false; updatePlayers(); tick();
+}
+function updatePlayers(){
+  const r=document.getElementById("ready"); if(!r||!S.game)return;
+  const done=(S.game.submitted||[]).filter(id=>id!==pid).map(pname);
+  r.textContent=done.length?"Ги пополнија сите полиња: "+done.join(", "):"";
+}
+function updateStop(){
+  const b=document.getElementById("stopb"); if(!b)return;
+  const n=S.game.categories.length; let f=0; for(let i=0;i<n;i++) if((S.my[i]||"").trim()) f++;
+  b.disabled=!S.landed||f<n;
+}
+let lastSaved="";
+function scheduleSave(){clearTimeout(S.saveT);S.saveT=setTimeout(()=>flushSave(),600)}
+function flushSave(force){
+  clearTimeout(S.saveT);
+  if(!S.code||!S.myRound)return Promise.resolve();
+  const body=JSON.stringify(S.my)+S.myRound;
+  if(body===lastSaved&&!force)return Promise.resolve();
+  lastSaved=body;
+  return api("answer",{round:S.myRound,values:S.my}).catch(()=>{lastSaved=""});
+}
+async function pressStop(){
+  const b=document.getElementById("stopb"); if(b)b.disabled=true;
+  await flushSave(true); api("stop").catch(()=>{});
+}
+function tick(){
+  const g=S.game; if(!g||g.status!=="playing")return;
+  const st=document.getElementById("stamp"); if(!st)return;
+  const el=now()-g.startedAt;
+  if(el<SPIN_MS){st.textContent=POOL[Math.floor(Math.random()*POOL.length)];document.getElementById("timer").textContent="Се извлекува буква…";return}
+  if(!S.landed){
+    S.landed=true; st.textContent=g.letter; st.classList.remove("spin"); st.classList.add("land");
+    app.querySelectorAll("[data-c]").forEach(i=>i.disabled=false);
+    const f=document.getElementById("f0"); if(f)f.focus({preventScroll:true});
+    updateStop();
+  }
+  const tm=document.getElementById("timer");
+  if(g.duration){
+    const left=Math.max(0,g.duration*1000-(el-SPIN_MS)), s=Math.ceil(left/1000);
+    tm.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); tm.classList.toggle("low",s<=10);
+    const bf=document.getElementById("barfill"); if(bf)bf.style.width=(left/(g.duration*10))+"%";
+    if(left<=0){app.querySelectorAll("[data-c]").forEach(i=>i.disabled=true);flushSave()}
+  }else{const s=Math.floor((el-SPIN_MS)/1000);tm.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+}
+setInterval(()=>{if(S.game&&S.game.status==="playing")tick()},250);
+
+/* ---------- SCORING ---------- */
+function computeRound(){
+  const g=S.game, ids=playerIds(), L=norm(g.letter), ov=g.ov||{};
+  const cells={}, pts={}; ids.forEach(id=>pts[id]=0);
+  g.categories.forEach((c,ci)=>{
+    const valid=[];
+    ids.forEach(id=>{
+      const a=g.answers["r"+g.round+"|"+id]; const raw=((a&&a.values&&a.values[ci])||"").trim(); const n=norm(raw);
+      const auto=!!n&&n.startsWith(L); const dict=!!n&&OFFICIAL.has(n);
+      const k=id+"|"+ci, hostSet=k in ov, ok=hostSet?(!!ov[k]&&!!n):auto;
+      cells[k]={raw,n,ok,auto,dict,hostSet,p:0}; if(ok)valid.push(id);
+    });
+    valid.forEach(id=>{const k=id+"|"+ci, same=valid.filter(o=>cells[o+"|"+ci].n===cells[k].n).length; cells[k].p=valid.length===1?20:(same>1?5:10); pts[id]+=cells[k].p});
+  });
+  return {ids,cells,pts};
+}
+function note(x){
+  if(!x.raw)return "";
+  let t="",cls="";
+  if(!x.auto){t="Не почнува на „"+S.game.letter+"“";cls="no"}
+  else if(x.dict){t="✓ Официјален речник";cls="yes"}
+  if(x.hostSet)t=(x.ok?"Признаено":"Поништено")+" од домаќинот"+(t?" · "+t:"");
+  return t?`<small class="chk ${cls}">${esc(t)}</small>`:"";
+}
+
+/* ---------- REVIEW ---------- */
+function renderReview(){
+  const g=S.game, host=isHost(), {ids,cells,pts}=computeRound(), t=totals();
+  const stopper=g.stoppedBy?pname(g.stoppedBy):null;
+  app.innerHTML=`
+  <section class="sheet stack">
+    <div class="roundbar">
+      <div class="stamp">${esc(g.letter)}</div>
+      <div class="grow">
+        <h2 style="margin:0">Рунда ${g.round} · проверка</h2>
+        <p class="muted">${stopper?`${esc(stopper)} викна СТОП.`:"Времето истече."} ${host?"Кликни на одговор за да го признаеш или поништиш.":"Домаќинот ги проверува одговорите."}</p>
+      </div>
+    </div>
+  </section>
+  <section class="sheet stack">
+    <div class="tablewrap"><table class="rev">
+      <thead><tr><th></th>${ids.map(id=>`<th>${esc(pname(id))}</th>`).join("")}</tr></thead>
+      <tbody>${g.categories.map((c,ci)=>`<tr><td class="cat">${esc(c)}</td>${ids.map(id=>{
+        const x=cells[id+"|"+ci], cls=!x.raw?"empty":(x.ok?"":"bad");
+        const inner=`<span class="t"><span class="w">${x.raw?esc(x.raw):"—"}</span>${note(x)}</span><span class="p">${x.raw?(x.ok?"+"+x.p:"0"):""}</span>`;
+        return `<td>${host&&x.raw?`<button class="ans ${cls}" data-k="${esc(id+"|"+ci)}" aria-label="${x.ok?"Поништи":"Признај"} ${esc(x.raw)}">${inner}</button>`:`<div class="ans ${cls}">${inner}</div>`}</td>`}).join("")}</tr>`).join("")}</tbody>
+      <tfoot><tr><td class="cat">Рунда</td>${ids.map(id=>`<td class="pts">+${pts[id]}</td>`).join("")}</tr>
+      <tr><td class="cat">Вкупно</td>${ids.map(id=>`<td class="pts">${(t[id]||0)+pts[id]}</td>`).join("")}</tr></tfoot>
+    </table></div>
+    <p class="src">„✓ Официјален речник“ значи дека записот е во листата топоними на <a href="https://makedonski.gov.mk/corpus/toponimi" target="_blank" rel="noopener">Официјалниот дигитален толковен речник на македонскиот јазик</a>. Листата во играта е делумна, па ако некое име го нема, не значи дека е погрешно. За правописот и категоријата одлучува домаќинот.</p>
+  </section>
+  <section class="row">${host?`<button class="primary" id="commit">Запиши поени</button>`:`<p class="muted">Чекаме домаќинот да ги запише поените.</p>`}</section>`;
+  if(host){
+    app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+      const k=b.dataset.k, x=cells[k], want=!x.ok;
+      api("toggle",{key:k,value:want===x.auto?null:want});
+    });
+    document.getElementById("commit").onclick=e=>{e.target.disabled=true;api("commit",{pts}).catch(()=>{e.target.disabled=false})};
+  }
+}
+
+/* ---------- DONE ---------- */
+function renderDone(){
+  const g=S.game, t=totals(), ids=playerIds().sort((a,b)=>t[b]-t[a]);
+  const top=ids.slice(0,3), order=[top[1],top[0],top[2]].filter(Boolean), h={[top[0]]:110,[top[1]]:78,[top[2]]:56};
+  app.innerHTML=`
+  <section class="sheet stack">
+    <h2>Крај на играта</h2>
+    <p class="muted">${(g.history||[]).length} рунди, букви: ${(g.history||[]).map(x=>esc(x.letter)).join(", ")||"—"}</p>
+    <div class="podium">${order.map(id=>`<div class="pod"><span class="nm">${esc(pname(id))}</span><span class="pts">${t[id]}</span><div class="blk" style="height:${h[id]}px">${ids.indexOf(id)+1}</div></div>`).join("")}</div>
+    ${ids.length>3?`<ul class="list">${ids.slice(3).map((id,i)=>`<li><span><span class="muted">${i+4}.</span> ${esc(pname(id))}</span><span class="pts">${t[id]}</span></li>`).join("")}</ul>`:""}
+  </section>
+  <section class="row"><button class="primary" id="home">Нова игра</button></section>`;
+  document.getElementById("home").onclick=()=>showHome();
+}
+
+/* ---------- BOOT ---------- */
+(async()=>{
+  const saved=ls.get("bg_code");
+  if(saved&&S.name){ try{S.code=saved;enterGame(saved);await api("join",{code:saved,name:S.name});return}catch(e){S.code=null} }
+  showHome();
+})();
+})();
+
+</script>
+</body>
+</html>
